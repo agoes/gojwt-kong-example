@@ -1,0 +1,38 @@
+version: "3.5"
+
+volumes:
+  kong_data: {}
+
+networks:
+  kong-net:
+    driver: bridge
+
+services:
+  kong:
+    build:
+      context: dockerfiles/kong
+    container_name: kong
+    networks:
+      - kong-net
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: ./kong.yml
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    restart: on-failure
+    ports:
+      - "8000:8000/tcp"
+      - "8001:8001/tcp"
+      - "8443:8443/tcp"
+      - "8444:8444/tcp"
+
+  upstream-api:
+    image: nginxdemos/hello:latest
+    container_name: hello
+    ports:
+      - "80:80"
+    networks:
+      - kong-net

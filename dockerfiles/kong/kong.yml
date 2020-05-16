@@ -1,0 +1,27 @@
+_format_version: "1.1"
+
+services:
+  - name: api
+    url: http://upstream-api
+    plugins:
+      - name: jwt
+        route: upstream-api
+        config:
+          claims_to_verify: ["exp", "nbf"]
+    routes:
+      - name: upstream-api
+        paths: [
+          "/api/v1"
+        ]
+        hosts: [
+          "api.local"
+        ]
+    path:
+      - "/"
+consumers:
+  - username: "api"
+jwt_secrets:
+  - consumer: "api"
+    rsa_public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnJgzoor/rEH0iN/6jYDe\nrMf1UtFnxPHBQbA6pnWwQz2cbPG1OBXnBzVZTym2suPcQsuvyqPeYvtjFYu9Guje\nHpkFzhGFDqQYhPc0JC7i1B1DzJPcWwa5+6JemTRL8VLG6p4OK+DHSrXCBR8zBQaF\nXky2tS4JSs0QQkdxyWSEgHLY8vVjs76tErv9r4wKnMN0fLEZsdpGltu4w821/XBv\nBXWC1jM04fcwX7vliVlUUPwu98bAZA+jMCyw9YeNUSIUYFVd6gYjadMw1YYVUf2R\nnOU7cgMAeoYU3Etj1dsnVtlXiMOhADoRETJLgyyyJHGpcWe7B/EjTY/+epq8z0m1\nswIDAQAB\n-----END PUBLIC KEY-----\n"
+    key: "key"
+    algorithm: "RS256"
